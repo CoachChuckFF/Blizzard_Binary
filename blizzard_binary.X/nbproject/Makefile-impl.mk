@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Blizzard_Binary.X
+PROJECTNAME=blizzard_binary.X
 
 # Active Configuration
 DEFAULTCONF=HT_PIC16F54

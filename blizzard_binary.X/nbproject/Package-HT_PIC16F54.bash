@@ -10,8 +10,8 @@ CND_CONF=HT_PIC16F54
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/Blizzard_Binary.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=Blizzard_Binary.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/blizzard_binary.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=blizzard_binary.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 PACKAGE_TOP_DIR=blizzardbinary.x/
 
 # Functions
