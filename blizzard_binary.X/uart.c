@@ -22,12 +22,13 @@ void init_uart()
     //USART Configuration
     
     //Baud rate config
-    BAUD1CON |= 0x08;//TEST
-    SP1BRGL = 31;
+    BAUD1CON = 0x0A;//TEST
+    //SP1BRGL = 31;
+    SP1BRGL = 7;
     SP1BRGH = 0x00;
     
     //Enable Registers
-    TX1STA = 0x04; //test
+    TX1STA = 0xC0; //test
     RC1STA |= 0xD0; 
     
     //Interrupt Setup

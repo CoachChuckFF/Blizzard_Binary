@@ -18,12 +18,13 @@
 #include "button.h"
 #include "relay.h"
 
+#define DMX_DEBOUNCE_TICK 3 //ticks until DMX is valid
+
 /******************************************************************************/
 /* User Global Variable Declaration                                           */
 /******************************************************************************/
 
 extern uint8_t DMX[513];
-extern uint8_t DMX_ADDRESS;
 uint8_t RELAY_ON = 0;
 uint8_t tick = 0;
 uint8_t toggle = 0;
@@ -33,9 +34,12 @@ uint8_t toggle = 0;
 /******************************************************************************/
 void main(void)
 {
-    uint8_t temp=0;
-    uint32_t n = 0;
-    uint32_t j = 0;
+    uint8_t dmx = 0;
+    uint8_t dmx_temp = 0;
+    uint8_t dmx_valid = 0;
+    uint8_t dmx_debounce_count = 0;
+    
+    //TODO get old DMX ADDRESS
     DMX_ADDRESS = 1;
     /* Configure the oscillator for the device */
     ConfigureOscillator();
@@ -43,47 +47,68 @@ void main(void)
     /* Initialize I/O and Peripherals for application */
     InitApp();
 
-    DMX_ADDRESS = 1;
+
     
     while(1)
     {
-    n = DMX[3];
-    if(n != 130)
-        DMX_ADDRESS = n;
     
         if(tick)
         {
-            //DMX_ADDRESS = DMX[3];
-            //TODO test this on another pin
-            /*if(DMX[3] > 33)
+            
+            dmx = DMX[DMX_ADDRESS];
+            
+            if(dmx == dmx_temp)
             {
-                if(!RELAY_ON)
+                if(dmx_debounce_count >= DMX_DEBOUNCE_TICK)
                 {
-                    relay_on();
-                    DMX_ADDRESS++;
-                    RELAY_ON = 1;
+                    dmx_valid = 1;                    
+                }
+                else
+                {
+                    dmx_debounce_count++;
+                    dmx_valid = 0;
+                }            
+            }
+            else
+            {
+                dmx_debounce_count = 0;     
+                dmx_valid = 0;
+            }
+            
+            dmx_temp = dmx;
+
+            //TODO test this on another pin
+            //change if its a dimmer
+            if(dmx_valid)
+            {
+                if(dmx)
+                {
+                    if(!RELAY_ON)
+                    {
+                        relay_on();
+                        RELAY_ON = 1;
+                    }
+                }
+                else
+                {
+                    if(RELAY_ON)
+                    {
+                        relay_off();
+                        RELAY_ON = 0;
+                    }
                 }
             }
-            else if(DMX[3] <= 33)
-            {
-                if(RELAY_ON)
-                {
-                    relay_off();
-                    DMX_ADDRESS--;
-                    RELAY_ON = 0;
-                }
-            }*/
             
             switch(read_button())
             {
                 case UP:
-                    //DMX_ADDRESS++;
+                    DMX_ADDRESS++;
                     break;
                 case DOWN:
-                    //DMX_ADDRESS--;
+                    DMX_ADDRESS--;
                     break;
                 case UP_HOLD:
-                    //DMX_ADDRESS = 1;
+                    DMX_ADDRESS = 1;
                     break;
                 case DOWN_HOLD:
                     update_display();
@@ -92,7 +117,10 @@ void main(void)
                     break;
             }
                    
-            update_number(DMX_ADDRESS);
+            if(dmx_valid && dmx)
+                update_number(dmx);
+            else
+                update_number(DMX_ADDRESS);
             update_display();
             
             tick = 0;
